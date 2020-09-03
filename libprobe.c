@@ -26,6 +26,8 @@ static int write_blocks(struct device *dev,
 	uint64_t offset = first_pos << block_order;
 	uint64_t pos, write_pos = first_pos;
 
+	fprintf(stderr, "Writing %ld blocks from %ld to %ld.\n",
+		1+last_pos-first_pos, first_pos, last_pos);
 	for (pos = first_pos; pos <= last_pos; pos++) {
 		fill_buffer_with_block(stamp_blk, block_order, offset, salt);
 		stamp_blk += block_size;
