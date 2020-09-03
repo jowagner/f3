@@ -26,7 +26,7 @@ static int write_blocks(struct device *dev,
 	uint64_t offset = first_pos << block_order;
 	uint64_t pos, write_pos = first_pos;
 
-	fprintf(stderr, "Writing %ld blocks from %ld to %ld.\n",
+	fprintf(stderr, "\nWriting %ld blocks from %ld to %ld.\n",
 		1+last_pos-first_pos, first_pos, last_pos);
 	for (pos = first_pos; pos <= last_pos; pos++) {
 		fill_buffer_with_block(stamp_blk, block_order, offset, salt);
@@ -48,9 +48,12 @@ static int write_blocks(struct device *dev,
 static int high_level_reset(struct device *dev, uint64_t start_pos,
 	uint64_t cache_size_block, int need_reset, uint64_t salt)
 {
+	fprintf(stderr, "\nhigh_level_reset().\n");
 	if (write_blocks(dev,
 		start_pos, start_pos + cache_size_block - 1, salt))
 		return true;
+
+	fprintf(stderr, "Resetting.\n");
 
 	/* Reset. */
 	if (need_reset && dev_reset(dev) && dev_reset(dev))
@@ -195,6 +198,8 @@ static int is_block_good(struct device *dev, uint64_t pos, int *pis_good,
 	char stack[align_head(block_order) + block_size];
 	char *probe_blk = align_mem(stack, block_order);
 	uint64_t found_offset;
+
+	fprintf(stderr, "v");
 
 	if (dev_read_blocks(dev, probe_blk, pos, pos) &&
 		dev_read_blocks(dev, probe_blk, pos, pos))
